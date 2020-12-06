@@ -1,4 +1,4 @@
----
+  ---
 title: "Journal (reproducible report)"
 author: "Sandeep Madhusudan"
 date: "2020-11-05"
@@ -18,13 +18,134 @@ knitr::opts_chunk$set(message=FALSE,warning=FALSE, cache=TRUE)
 
 **IMPORTANT:** You can delete everything in here and start fresh. You might want to start by not deleting anything above this line until you know what that stuff is doing.
 
-This is an `.Rmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a \# in front of your text, it will create a top level-header.
+This is an `.Rmd` file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a /# in front of your text, it will create a top level-header.
 
-# My first post
+# Tidyverse
+```{r}
+#import libraries
+library(tidyverse)
+library(readxl)
+library(lubridate)
+#load files
+bikes_tbl      <- read_excel ("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/bikes.xlsx")
+orderlines_tbl <- read_excel ("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/orderlines.xlsx" )
+bikeshops_tbl  <- read_excel("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/bikeshops.xlsx")
 
-Last compiled: `r Sys.Date()`
+#examine files
 
-Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left. 
+#join files using the keys product id, bikeshop id and customer id
+bike_orderlines_joined_tbl <- orderlines_tbl %>%
+  left_join(bikes_tbl, by = c("product.id" = "bike.id")) %>%
+  left_join(bikeshops_tbl, by = c("customer.id" = "bikeshop.id"))
+
+#Examine the joined files 
+
+# Select State as feature and examine the data 
+
+# wrangle data 
+bike_orderlines_wrangled_tbl <- bike_orderlines_joined_tbl %>%
+  separate(col    = location,
+           into   = c("city","state"),
+           sep    = ",") %>%
+  mutate(total.price = price * quantity) %>%
+  select(-...1, -gender) %>%
+  select(-ends_with(".id")) %>%
+  bind_cols(bike_orderlines_joined_tbl %>% select(order.id)) %>% 
+  
+  select(order.id, contains("order"), contains("model"), contains("city"),state,
+         price, quantity, total.price,
+         everything()) %>%
+  rename(bikeshop = name) %>%
+  set_names(names(.) %>% str_replace_all("//.", "_"))
+
+#extract required column
+sales_by_year_tbl <- bike_orderlines_wrangled_tbl %>%
+  select(order_date, total_price) %>%
+  mutate(year = year(order_date)) %>%
+  group_by(year) %>% 
+  summarize(sales = sum(total_price)) %>%
+  mutate(sales_text = scales::dollar(sales, big.mark = ".", 
+                                     decimal.mark = ",", 
+                                     prefix = "", 
+                                     suffix = "???"))
+
+
+
+#plot bar chart
+sales_by_year_tbl %>%
+  
+  # Setup canvas with the columns year (x-axis) and sales (y-axis)
+  ggplot(aes(x = year, y = sales)) +
+  
+  # Geometries
+  geom_col(fill = "#2DC6D6") + # Use geom_col for a bar plot
+  geom_label(aes(label = sales_text)) + # Adding labels to the bars
+  geom_smooth(method = "lm", se = FALSE) + # Adding a trendline
+  scale_y_continuous(labels = scales::dollar_format(big.mark = ".", 
+                                                    decimal.mark = ",", 
+                                                    prefix = "", 
+                                                    suffix = "???")) +
+  labs(
+    title    = "Revenue by year",
+    subtitle = "Upward Trend",
+    x = "", # Override defaults for x and y
+    y = "Revenue"
+  )
+
+
+sales_by_year_state_tbl <- bike_orderlines_wrangled_tbl %>%
+  
+  # Select columns and add a year
+  select(order_date, total_price, state) %>%
+  mutate(year = year(order_date)) %>%
+  
+  # Group by and summarize year and main catgegory
+  group_by(year, state) %>%
+  summarise(sales = sum(total_price)) %>%
+  ungroup() %>%
+  
+  # Format $ Text
+  mutate(sales_text = scales::dollar(sales, big.mark = ".", 
+                                     decimal.mark = ",", 
+                                     prefix = "", 
+                                     suffix = "???"))
+
+#plot by year and locATION 
+
+
+
+sales_by_year_state_tbl %>%
+
+  ggplot(aes(x = year, y = sales, fill = state)) +
+  geom_col() + theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+
+  facet_wrap(~ state, scales = "free_y") +
+  
+  scale_y_continuous(labels = scales::dollar_format(big.mark = ".", 
+                                                    decimal.mark = ",", 
+                                                    prefix = "", 
+                                                    suffix = "???")) +
+  labs(
+    title = "Revenue by year and state",
+    subtitle = "Each product category has an upward trend",
+    fill = "State" # Changes the legend name
+  )
+
+
+library("writexl")
+bike_orderlines_wrangled_tbl %>%
+  write_xlsx("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/bike_orderlines.xlsx")
+# 7.2 CSV ----
+bike_orderlines_wrangled_tbl %>% 
+  write_csv("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/bike_orderlines.csv")
+
+
+# 7.3 RDS ----
+
+bike_orderlines_wrangled_tbl %>% 
+  write_rds("D:/Data Scienc/DS_101/DS_101/00_data/01_bike_sales/01_raw_data/bike_orderlines.rds")
+
+```
 
 ## Data Aquisition
 ```{r}
@@ -80,9 +201,196 @@ model_price_tbl
 ```
 
 
-### third level header
+### Data Wrangling
+Challenge 1
+```{r setup, include=FALSE}
+library(vroom)
+library(data.table)
+library(tidyverse)
+col_types <- list(
+  id = col_character(),
+  type = col_character(),
+  name_first = col_character(),
+  name_last = col_character(),
+  organization = col_character()
+)
 
-Here's an even lower level header
+assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+col_types <- list(
+  patent_id = col_character(),
+  assignee_id = col_character(),
+  location_id = col_character()
+)
+
+patent_assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/patent_assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+Join_tbl <- merge(patent_assignee_tbl,assignee_tbl, by.x = "assignee_id", by.y = "id") 
+
+num_tbl<- Join_tbl%>%
+  select(patent_id,organization)%>% 
+  count(organization)%>%
+  group_by(organization) 
+
+final_tbl <- num_tbl %>%
+  select (organization,n)%>%
+  arrange(desc(n))
+
+#List of top ten companies with most assigned/granted patents.
+
+head(final_tbl,10)
+
+```
+Challenge 2
+```{r setup, include=FALSE}
+# List the top 10 companies with the most new granted patents for 2019.
+library(vroom)
+library(data.table)
+library(tidyverse)
+library(lubridate)
+
+col_types <- list(
+  id = col_character(),
+  type = col_character(),
+  name_first = col_character(),
+  name_last = col_character(),
+  organization = col_character()
+)
+
+assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+col_types <- list(
+  patent_id = col_character(),
+  assignee_id = col_character(),
+  location_id = col_character()
+)
+
+patent_assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/patent_assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+col_types <- list(
+  id = col_character(),
+  type = col_character(),
+  number = col_character(),
+  country = col_character(),
+  date = col_date("%Y-%m-%d"),
+  abstract = col_character(),
+  title = col_character(),
+  kind = col_character(),
+  num_claims = col_double(),
+  filename = col_character(),
+  withdrawn = col_character()
+)
+
+patent_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/patent.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+Join_tbl <- merge(patent_assignee_tbl,assignee_tbl, by.x = "assignee_id", by.y = "id") 
+Join_1_tbl <- merge(patent_tbl,Join_tbl, by.x="id", by.y ="patent_id") 
+
+Filter_2019_tbl <- Join_1_tbl %>%
+  select("id", "date", "country","organization")%>%
+  filter(between(date,as.Date("2019-01-01"), as.Date("2020-01-01")))%>%
+  count(organization)%>%
+  group_by(organization)    
+
+
+
+Final_tbl <- Filter_2019_tbl %>%
+  select (organization,n)%>%
+  arrange(desc(n))
+
+#list of 10 organisation 
+
+head(Final_tbl,10)
+```
+Challenge 3
+```{r setup, include=FALSE}
+# list of the top 10 companies (worldwide) with the most patents. The top 5 USPTO tech main classes
+library(vroom)
+library(data.table)
+library(tidyverse)
+library(lubridate)
+
+
+col_types <- list(
+  id = col_character(),
+  type = col_character(),
+  name_first = col_character(),
+  name_last = col_character(),
+  organization = col_character()
+)
+
+assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+col_types <- list(
+  patent_id = col_character(),
+  assignee_id = col_character(),
+  location_id = col_character()
+)
+
+patent_assignee_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/patent_assignee.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+col_types <- list(
+  uuid = col_character(),
+  patent_id = col_character(),
+  mainclass_id = col_character(),
+  subclass_id = col_character(),
+  sequence = col_character()
+  
+)
+
+uspc_tbl <- vroom(
+  file       = "F:/TUHH/Semesters/3rd Sem/Business Data science basics/DS_101/DS_101/00_data/patents/uspc.tsv", 
+  delim      = "\t", 
+  col_types  = col_types,
+  na         = c("", "NA", "NULL")
+)
+
+Join_tbl <- merge(patent_assignee_tbl,assignee_tbl, by.x = "assignee_id", by.y = "id") 
+Join_tbl_3 <- merge(Join_tbl,uspc_tbl, by = "patent_id")
+
+
+
+final_tbl <- Join_tbl_3 %>%
+  select(patent_id,organization,mainclass_id,sequence)%>%
+  group_by(organization)%>%
+  sort(n, decreasing = TRUE)%>%
+  filter(sequence == 4)
+```
 
 # Data Visualization
 Challenge 1
@@ -164,7 +472,7 @@ covid_data_2020_cumulative_cases  %>%
 
 Challenge 2 
 ```{r}
-cat("\014")
+cat("/014")
 library(ggplot2)
 library(dplyr)
 library(tidyverse)
