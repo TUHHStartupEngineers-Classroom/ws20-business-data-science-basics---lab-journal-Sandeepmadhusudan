@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Sandeep Madhusudan" />
+
+<meta name="date" content="2020-11-05" />
+
+<title>Journal (reproducible report)</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/bootstrap.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/anchor-sections-1.0/anchor-sections.css" rel="stylesheet" />
+<script src="site_libs/anchor-sections-1.0/anchor-sections.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MyLabJournal</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="journal.html">Journal</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Class notes
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="dictionary.html">Dictionary</a>
+    </li>
+    <li>
+      <a href="data_wrangling.html">Data Wrangling</a>
+    </li>
+    <li>
+      <a href="ggplot_graphs.html">ggplot graphs</a>
+    </li>
+    <li>
+      <a href="machine_learning.html">machine learning</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="links.html">Links</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Journal (reproducible report)</h1>
+<h4 class="author">Sandeep Madhusudan</h4>
+<h4 class="date">2020-11-05</h4>
+
+</div>
+
+
+<p><strong>IMPORTANT:</strong> You can delete everything in here and start fresh. You might want to start by not deleting anything above this line until you know what that stuff is doing.</p>
+<p>This is an <code>.Rmd</code> file. It is plain text with special features. Any time you write just like this, it will be compiled to normal text in the website. If you put a # in front of your text, it will create a top level-header.</p>
+<div id="my-first-post" class="section level1">
+<h1><span class="header-section-number">1</span> My first post</h1>
+<p>Last compiled: 2020-12-06</p>
+<p>Notice that whatever you define as a top level header, automatically gets put into the table of contents bar on the left.</p>
+<div id="data-aquisition" class="section level2">
+<h2><span class="header-section-number">1.1</span> Data Aquisition</h2>
+<pre class="r"><code># WEBSCRAPING ----
+
+
+# 1.0 LIBRARIES ----
+
+library(tidyverse) # Main Package - Loads dplyr, purrr, etc.
+library(rvest)     # HTML Hacking &amp; Web Scraping
+library(xopen)     # Quickly opening URLs
+library(jsonlite)  # converts JSON files to R objects
+library(glue)      # concatenate strings
+library(stringi)   # character string/text processing
+
+# 1.1 COLLECT PRODUCT TYPES ----
+url_home          &lt;- &quot;https://www.radon-bikes.de/&quot;
+xopen(url_home)</code></pre>
+<pre><code>## Running cmd /c start &quot;\&quot;\&quot;&quot; /b &quot;https://www.radon-bikes.de/&quot;</code></pre>
+<pre class="r"><code>html_home         &lt;- read_html(url_home)
+bike_family_tbl &lt;- html_home %&gt;%
+html_nodes(css = &quot;.megamenu__item &gt; a&quot;) %&gt;%  
+html_attr(&#39;href&#39;) %&gt;%  
+discard(.p = ~stringr::str_detect(.x,&quot;wear&quot;)) %&gt;%  
+enframe(name = &quot;position&quot;, value = &quot;cat_subcat_url&quot;) %&gt;%  
+  
+mutate(family_id = str_glue(&quot;https://www.radon-bikes.de{cat_subcat_url}bikegrid&quot;))
+bike_family_tbl</code></pre>
+<pre><code>## # A tibble: 8 x 3
+##   position cat_subcat_url           family_id                                   
+##      &lt;int&gt; &lt;chr&gt;                    &lt;glue&gt;                                      
+## 1        1 /mountainbike/hardtail/  https://www.radon-bikes.de/mountainbike/har~
+## 2        2 /mountainbike/fullsuspe~ https://www.radon-bikes.de/mountainbike/ful~
+## 3        3 /trekking-cross/trekkin~ https://www.radon-bikes.de/trekking-cross/t~
+## 4        4 /trekking-cross/cross/   https://www.radon-bikes.de/trekking-cross/c~
+## 5        5 /e-bike/mountainbike/    https://www.radon-bikes.de/e-bike/mountainb~
+## 6        6 /e-bike/trekking/        https://www.radon-bikes.de/e-bike/trekking/~
+## 7        7 /roadbike/carbon/        https://www.radon-bikes.de/roadbike/carbon/~
+## 8        8 /roadbike/alu/           https://www.radon-bikes.de/roadbike/alu/bik~</code></pre>
+<pre class="r"><code># 2.0 COLLECT BIKE DATA ----
+
+bike_category_url &lt;- bike_family_tbl$family_id[1]
+xopen(bike_category_url)</code></pre>
+<pre><code>## Running cmd /c start &quot;\&quot;\&quot;&quot; /b \
+##   &quot;https://www.radon-bikes.de/mountainbike/hardtail/bikegrid&quot;</code></pre>
+<pre class="r"><code>html_bike_category  &lt;- read_html(bike_category_url)
+
+bike_name_tbl        &lt;- html_bike_category %&gt;%
+html_nodes(css = &quot;.m-bikegrid__info .a-heading--small&quot;) %&gt;%
+html_text() %&gt;%
+
+
+enframe(name = &quot;position&quot;, value = &quot;name&quot;)
+bike_name_tbl </code></pre>
+<pre><code>## # A tibble: 33 x 2
+##    position name                                                                
+##       &lt;int&gt; &lt;chr&gt;                                                               
+##  1        1 &quot;\n                                    JEALOUS 8.0\n               ~
+##  2        2 &quot;\n                                    JEALOUS 9.0\n               ~
+##  3        3 &quot;\n                                    JEALOUS 10.0\n              ~
+##  4        4 &quot;\n                                    JEALOUS 10.0 EA\n           ~
+##  5        5 &quot;\n                                    JEALOUS 10.0\n              ~
+##  6        6 &quot;\n                                    JEALOUS 10.0 EA\n           ~
+##  7        7 &quot;\n                                    NEW JEALOUS SUPERLITE 1X\n  ~
+##  8        8 &quot;\n                                    JEALOUS AL 8.0\n            ~
+##  9        9 &quot;\n                                    JEALOUS AL 8.0 HD\n         ~
+## 10       10 &quot;\n                                    JEALOUS AL 9.0\n            ~
+## # ... with 23 more rows</code></pre>
+<pre class="r"><code>bike_price_tbl &lt;- html_bike_category %&gt;%
+html_nodes(css = &quot;.m-bikegrid__price.currency_eur .m-bikegrid__price--active&quot;) %&gt;%  
+html_text() %&gt;% 
+enframe(name = &quot;position&quot;, value = &quot;price&quot;)
+bike_price_tbl</code></pre>
+<pre><code>## # A tibble: 33 x 2
+##    position price 
+##       &lt;int&gt; &lt;chr&gt; 
+##  1        1 2599 €
+##  2        2 2999 €
+##  3        3 3999 €
+##  4        4 5299 €
+##  5        5 3699 €
+##  6        6 3799€ 
+##  7        7 999 € 
+##  8        8 999 € 
+##  9        9 1299 €
+## 10       10 1499 €
+## # ... with 23 more rows</code></pre>
+<pre class="r"><code>model_price_tbl &lt;- left_join(bike_name_tbl, bike_price_tbl)%&gt;% 
+select(name, price)
+model_price_tbl</code></pre>
+<pre><code>## # A tibble: 33 x 2
+##    name                                                                    price
+##    &lt;chr&gt;                                                                   &lt;chr&gt;
+##  1 &quot;\n                                    JEALOUS 8.0\n                  ~ 2599~
+##  2 &quot;\n                                    JEALOUS 9.0\n                  ~ 2999~
+##  3 &quot;\n                                    JEALOUS 10.0\n                 ~ 3999~
+##  4 &quot;\n                                    JEALOUS 10.0 EA\n              ~ 5299~
+##  5 &quot;\n                                    JEALOUS 10.0\n                 ~ 3699~
+##  6 &quot;\n                                    JEALOUS 10.0 EA\n              ~ 3799€
+##  7 &quot;\n                                    NEW JEALOUS SUPERLITE 1X\n     ~ 999 €
+##  8 &quot;\n                                    JEALOUS AL 8.0\n               ~ 999 €
+##  9 &quot;\n                                    JEALOUS AL 8.0 HD\n            ~ 1299~
+## 10 &quot;\n                                    JEALOUS AL 9.0\n               ~ 1499~
+## # ... with 23 more rows</code></pre>
+<div id="third-level-header" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> third level header</h3>
+<p>Here’s an even lower level header</p>
+</div>
+</div>
+</div>
+<div id="data-visualization" class="section level1">
+<h1><span class="header-section-number">2</span> Data Visualization</h1>
+<p>Challenge 1</p>
+<pre class="r"><code>library(tidyverse)
+library(ggthemes)
+library(lubridate)
+library(ggrepel)
+
+## DATA PREPARATION
+
+library(tidyverse)
+covid_data_tbl &lt;- read_csv(&quot;https://opendata.ecdc.europa.eu/covid19/casedistribution/csv&quot;)
+
+
+covid_data_2020_cumulative_cases &lt;- covid_data_tbl %&gt;%
+  select(countriesAndTerritories, month, year, cases) %&gt;% 
+  set_names(c(&quot;country&quot;, &quot;month&quot;, &quot;year&quot;, &quot;cases&quot;)) %&gt;%
+  
+  # Selecting columns to focus on and adding a month column
+  
+  filter(year == &quot;2020&quot;) %&gt;%
+  filter(country %in%  c(&quot;Germany&quot;, &quot;Spain&quot;, &quot;France&quot;,&quot;United_States_of_America&quot;,&quot;United_Kingdom&quot;))  %&gt;%
+  
+  # Grouping by month, and summarizing cases
+  group_by(month,country) %&gt;%
+  summarize(cases = sum(cases)) %&gt;% 
+  ungroup() %&gt;%
+  group_by(country) %&gt;%
+  mutate (cases = cumsum(cases)) %&gt;%
+  ungroup() %&gt;%
+
+  mutate(cumulative_cases = scales::dollar(cases, big.mark = &quot;.&quot;, 
+                                   decimal.mark = &quot;,&quot;, 
+                                   prefix = &quot;&quot;, 
+                                   suffix = &quot;&quot;))
+
+## PLOTTING
+# Canvas
+covid_data_2020_cumulative_cases  %&gt;%
+  ggplot(aes(x = month, y = cases, color = country)) +
+
+  # Geometries
+  geom_line(size = 1) +
+  
+  # geom_label(data = covid_data_2020_cumulative_cases %&gt;% select(cases) %&gt;% max(cases))+
+  # geom_label(aes(x=month, y=cases, label=cumulative_cases) , 
+  #            data = covid_data_2020_cumulative_cases %&gt;% slice(which.max(cases)),
+  #            vjust = -0.2, 
+  #            hjust = 0.1) +
+  
+  geom_label_repel(aes(x=month, y=cases, label=cumulative_cases) , 
+                   data = covid_data_2020_cumulative_cases %&gt;% slice(which.max(cases)),
+                    vjust = 0.5, 
+                    hjust = 2.5,color = &quot;#08306B&quot;)+
+
+  # Formatting
+  expand_limits(y = 0) +
+ 
+  scale_x_continuous(breaks = covid_data_2020_cumulative_cases$month,
+                     labels = month(covid_data_2020_cumulative_cases$month, label = T)) +
+  
+  scale_y_continuous(breaks = seq(0e6, 16e6, by = 2e6),
+                     labels = scales::dollar_format(scale = 1/1e6,
+                                                    prefix = &quot;&quot;,
+                                                    suffix = &quot;M&quot;)) +
+  labs(
+    title = &quot;COVID-19 confirmed cases worldwide&quot;,
+    x = &quot;Year 2020&quot;,
+    y = &quot;Cumulative Cases&quot;,
+    color = &quot;Country&quot;
+  )  +
+  
+  theme_light() +
+  theme(title = element_text(face = &quot;bold&quot;, color = &quot;#08306B&quot;),
+        legend.position  = &quot;bottom&quot;,
+        axis.text.x = element_text(angle = 45))</code></pre>
+<p><img src="journal_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Challenge 2</p>
+<pre class="r"><code>cat(&quot;\014&quot;)</code></pre>
+<div style="page-break-after: always;"></div>
+<pre class="r"><code>library(ggplot2)
+library(dplyr)
+library(tidyverse)
+library(ggthemes)
+library(lubridate)
+library(ggrepel)
+library(maps)
+library(readr)
+library(scales)
+## DATA PREPARATION
+covid_data_tbl &lt;- read_csv(&quot;https://opendata.ecdc.europa.eu/covid19/casedistribution/csv&quot;)
+
+
+covid_mortality_rate &lt;- covid_data_tbl %&gt;%
+  select(countriesAndTerritories, deaths, popData2019) %&gt;% 
+  set_names(c(&quot;country&quot;, &quot;deaths&quot;, &quot;population&quot;)) %&gt;%
+  
+  # Selecting columns to focus on and adding a month column
+  mutate(mortality_rate = deaths/population)%&gt;%
+  mutate(across(country, str_replace_all, &quot;_&quot;, &quot; &quot;)) %&gt;%
+  mutate(country = case_when(
+    
+    country == &quot;United Kingdom&quot; ~ &quot;UK&quot;,
+    country == &quot;United States of America&quot; ~ &quot;USA&quot;,
+    country == &quot;Czechia&quot; ~ &quot;Czech Republic&quot;,
+    TRUE ~ country
+  )) %&gt;%
+  
+  group_by(country) %&gt;%
+  summarize(deaths=sum(deaths),population=max(population),mortality_rate = sum(mortality_rate)) %&gt;%
+  ungroup() 
+ 
+
+world &lt;- map_data(&quot;world&quot;)
+
+covid_world_mortality_rate &lt;- left_join(x = world, y = covid_mortality_rate, by=c(&quot;region&quot; = &quot;country&quot;)) 
+
+ggplot(covid_world_mortality_rate, aes(x=long, y=lat, group = group, fill = (mortality_rate))) + 
+  geom_polygon(colour = &quot;white&quot;) +
+  scale_fill_continuous(low = &quot;dodgerblue&quot;,
+                        high = &quot;black&quot;,
+                        guide=&quot;colorbar&quot;,
+                        labels=percent,
+                        limits = c(0, .0015)) +
+   
+  
+  
+  theme_bw() +
+  labs(fill = &quot;Mortality Rate&quot; ,
+       title = &quot;Confirmed COVID-19 deaths relative to the size of population&quot;, 
+       subtitle = &quot;More than 1.5 Million confirmed COVID-19 deaths worldwide&quot;,
+       x=&quot;long&quot;, 
+       y=&quot;lat&quot;) </code></pre>
+<p><img src="journal_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>  # scale_y_continuous(breaks=c()) +
+  # scale_x_continuous(breaks=c()) +
+  # theme()</code></pre>
+<p>When you knit this R Markdown document, you will see that the histogram is printed to the page, along with the R code. This document can be set up to hide the R code in the webpage, just delete the comment (hashtag) from the cold folding option in the yaml header up top. For purposes of letting yourself see the code, and me see the code, best to keep it the way that it is. You’ll learn that all of these things and more can be customized in each R code block.</p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
